@@ -1,0 +1,158 @@
+1: --------------------------------------------------------------------------------------------
+
+import csv
+def loaddata(filename):
+    with open(filename,'r') as f:
+        reader=csv.reader(f)
+        data=list(reader)
+        header=data[0]
+        instances=data[1:]
+    return header,instances
+def finds(data):
+    for instance in data:
+        if instance[-1].lower()=='yes':
+            hypothesis=instance[:-1]
+            break
+    else:
+        None
+    for instance in data:
+        if instance[-1].lower()=='yes':
+            for i in range(len(hypothesis)):
+                if hypothesis[i]!=instance[i]:
+                    hypothesis[i]='?'
+    return hypothesis
+filename='climate.csv'
+header,data=loaddata(filename)
+print('Attribute',header)
+print('')
+print('trainingdata')
+for row in data:
+    print(row)
+hypothesis=finds(data)
+if hypothesis:
+    print('Most specific hypothesis by FIND_s')
+    print(hypothesis)
+else:
+    print('No positive training example in training data')
+
+
+2:--------------------------------------------------------------------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+def loaddata(filename):
+    data = pd.read_csv(filename)
+    print(data)
+    concepts = data.iloc[:,:-1].values
+    target = data.iloc[:,-1].values
+    return concepts,target
+def candidate(concepts,target):
+    nf = len(concepts[0])
+    s = concepts[0].copy()
+    g = [["?" for _ in range(nf)] for _ in range(nf)]
+    for i,example in enumerate(concepts):
+        if target[i].lower()=="yes":
+            for x in range(nf):
+                if s[x]!=example[x]:
+                    s[x]="?"
+                    g[x][x] = "?"
+        else:
+            for x in range(nf):
+                if s[x]!=example[x]:
+           
+                    g[x][x] = s[x]
+                else:
+                    g[x][x] = "?"
+    g = [h for h in g if any(attr != "?" for attr in h)]
+    return s,g
+filename = "weather.csv"
+concepts,target = loaddata(filename)
+s,g = candidate(concepts,target)
+print("most specific hypothesis using candidate")
+print(s)
+print("most general hypothesis using candidate")
+print(g)
+
+
+3:-------------------------------------------------------------------------------------------------------------------------
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+iris = load_iris()
+x = iris.data
+y = iris.target
+print(iris)
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, random_state=42)
+
+clf = DecisionTreeClassifier()
+clf.fit(x_train, y_train)
+y_pred = clf.predict(x_test)
+
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"accuracy :{accuracy:.2f}")
+
+new_sample = [[5.1, 2.5, 4.6, 1.5]]
+
+predicted_class_index = clf.predict(new_sample)[0]
+predicted_class_name = iris.target_names[predicted_class_index]
+print(f"Predicted class for the new sample {new_sample} is : {predicted_class_name}")
+
+
+4:---------------------------------------------------------------------------------------------------------------------------
+
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix
+from sklearn import datasets
+
+iris = datasets.load_iris()
+print("Iris data set Loadedd")
+x_train, x_test, y_train, y_test = train_test_split(iris.data, iris.target, random_state=0)
+
+for i in range(len(iris.target_names)):
+    print("label:", i, "-", str(iris.target_names[i]))
+classifier = KNeighborsClassifier(n_neighbors = 2)
+classifier.fit(x_train, y_train)
+y_pred = classifier.predict(x_test)
+print("Results of classificatiion using K_nn with k =2")
+for r in range (0, len(x_test)):
+    print("Sample:", str(x_test[r]), "Actual Label:", str(y_test[r]), "Predicted_label:", str(y_pred[r]))
+print("\n classification Acuuracy : ", classifier.score(x_test, y_test))
+print("\n Confusion Matrix :\n", metrics.confusion_matrix(y_test, y_pred))
+          
+          
+          
+          
+5:-------------------------------------------------------------------------------------------------------------------------
+
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+data=pd.read_csv("ML5.csv")
+print(data)
+x=data.iloc[:,:-1]
+y=data.iloc[:,-1]
+x=x.copy()
+le_outlook=LabelEncoder()
+x.outlook=le_outlook.fit_transform(x.outlook)
+le_temperature=LabelEncoder()
+x.temperature=le_temperature.fit_transform(x.temperature)
+print("\nNow the training data output is\n",x)
+le_play=LabelEncoder()
+y=le_play.fit_transform(y)
+print("\nNow the training data output is\n",y)
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.20)
+classifier=GaussianNB()
+classifier.fit(x_train,y_train)
+print("Accuracy:",accuracy_score(classifier.predict(x_test),y_test))
+print("Recall:",recall_score(classifier.predict(x_test),y_test))
+print("Precision:",precision_score(classifier.predict(x_test),y_test))

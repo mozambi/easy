@@ -1,0 +1,408 @@
+
+1:----------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sum or Factorial</title>
+</head>
+<body>
+
+<h1>Choose either 1 or 2</h1>
+
+<form action="" method="GET">
+  <h2>1. Sum of digits</h2>
+  <h2>2. Factorial of number</h2>
+
+  <h3>Enter your choice:</h3>
+  <input type="text" name="choice" required><br><br>
+
+  <h3>Enter your number:</h3>
+  <input type="text" name="b" required><br><br>
+
+  <input type="submit" value="Submit"><br><br>
+</form>
+
+<?php
+if (isset($_GET["b"]) && isset($_GET["choice"])) {
+    $num = $_GET["b"];
+    $choice = $_GET["choice"];
+
+    // Validate input
+    if (!is_numeric($num) || $num < 0 || intval($num) != $num) {
+        echo "Please enter a valid non-negative integer number.<br>";
+        exit;
+    }
+
+    $num = (int)$num;  // convert to integer
+
+    switch ($choice) {
+        case 1:
+            // Sum of digits
+            $temp = $num;
+            $sum = 0;
+            while ($temp > 0) {
+                $r = $temp % 10;
+                $sum += $r;
+                $temp = (int)($temp / 10);
+            }
+            echo "Sum of digits of " . $num . " is " . $sum . ".<br>";
+            break;
+
+        case 2:
+            // Factorial
+            if ($num > 20) {
+                // To avoid very large numbers
+                echo "Number too large for factorial calculation.<br>";
+                break;
+            }
+            $fact = 1;
+            for ($i = 1; $i <= $num; $i++) {
+                $fact *= $i;
+            }
+            echo "Factorial of " . $num . " is " . $fact . ".<br>";
+            break;
+
+        default:
+            echo "Invalid choice. Please enter 1 or 2.<br>";
+            break;
+    }
+}
+?>
+
+</body>
+</html>
+
+2a: ----------------------------------------------------------------------------------------------------------
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Operations</title>
+</head>
+<body>
+
+<h1>Choose 1, 2, or 3</h1>
+
+<form action="" method="GET">
+  <h2>1. Read a file</h2>
+  <h2>2. Write to a file</h2>
+  <h2>3. Append to a file</h2>
+
+  <h3>Enter your choice:</h3>
+  <input type="text" name="choice" required><br><br>
+
+  <h3>Enter text (for write/append):</h3>
+  <input type="text" name="text"><br><br>
+
+  <input type="submit" value="Submit"><br><br>
+</form>
+
+<?php
+if (isset($_GET['choice'])) {
+  $choice = $_GET['choice'];
+  $text = isset($_GET['text']) ? $_GET['text'] : '';
+
+  switch ($choice) {
+    case '1':
+      $file = 'txtsample.txt';
+      if (file_exists($file)) {
+        $content = file_get_contents($file);
+        echo nl2br($content);
+      } else {
+        echo "File does not exist.";
+      }
+      break;
+
+    case '2':
+      $file = 'nesample.txt';
+      file_put_contents($file, $text);
+      echo "Text written to file.";
+      break;
+
+    case '3':
+      $file = 'nesample.txt';
+      file_put_contents($file, $text, FILE_APPEND);
+      echo "Text appended to file.";
+      break;
+
+    default:
+      echo "Invalid choice. Please enter 1, 2, or 3.";
+  }
+}
+?>
+
+</body>
+</html>
+
+
+
+2b: ------------------------------------------------------------------------------------------------------------------
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Function Selector</title>
+</head>
+<body>
+
+<h1>Choose 1, 2, or 3</h1>
+
+<form action="" method="GET">
+    <h2>1. String functions</h2>
+    <h2>2. Math functions</h2>
+    <h2>3. Date functions</h2>
+
+    <h3>Enter your choice:</h3>
+    <input type="text" name="choice" required><br>
+
+    <h3>Enter your string or number:</h3>
+    <input type="text" name="b" required><br><br>
+
+    <input type="submit" value="Submit"><br><br>
+</form>
+
+<?php
+if (isset($_GET["b"]) && isset($_GET["choice"])) {
+    $string = $_GET["b"];
+    $choices = $_GET["choice"];
+
+    switch ($choices) {
+        case 1:
+            echo "Length: " . strlen($string) . "<br>";
+            echo "Uppercase: " . strtoupper($string) . "<br>";
+            echo "Reversed: " . strrev($string) . "<br>";
+            break;
+
+        case 2:
+            if (is_numeric($string)) {
+                echo "Square Root: " . sqrt($string) . "<br>";
+                echo "Rounded: " . round($string) . "<br>";
+                echo "Power of 2: " . pow($string, 2) . "<br>";
+            } else {
+                echo "Please enter a valid numeric input.<br>";
+            }
+            break;
+
+        case 3:
+            echo "Today: " . date("Y-m-d") . "<br>";
+            echo "Time: " . date("h:i:s A") . "<br>";
+            echo "Day: " . date("l") . "<br>";
+            break;
+
+        default:
+            echo "Invalid choice. Please enter 1, 2, or 3.<br>";
+            break;
+    }
+}
+?>
+
+</body>
+</html>
+
+
+3. ------------------------------------------------------------------------------------------------------------------
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Uppercase and Lowercase Counter</title>
+</head>
+<body>
+    <center>
+        <h1>Calculate Uppercase and Lowercase</h1>
+    </center>
+    
+    <form action="" method="GET">
+        <h2>Enter your text</h2>
+        <input type="text" name="b"><br><br>
+        <input type="submit" value="Submit"><br>
+    </form>
+
+    <?php
+    if (isset($_GET["b"])) {
+        $n = $_GET["b"];
+        $length = strlen($n);
+        $upper = 0;
+        $lower = 0;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $n[$i]; // Fix: use square brackets to access characters
+            if (ctype_upper($char)) {
+                $upper++;
+            } elseif (ctype_lower($char)) {
+                $lower++;
+            }
+        }
+
+        echo "<h3>Uppercase letters: $upper</h3>";
+        echo "<h3>Lowercase letters: $lower</h3>";
+    }
+    ?>
+</body>`
+</html>
+
+4. ------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple PHP Form Validation</title>
+    <style>.error { color: red; }</style>
+</head>
+<body>
+<h2>Simple PHP Form Validation</h2>
+<?php
+$name = $email = $password = "";
+$nameErr = $emailErr = $passwordErr = "";
+function clean($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = clean($_POST["name"] ?? '');
+    $email = clean($_POST["email"] ?? '');
+    $password = clean($_POST["password"] ?? '');
+    if (!$name) {
+        $nameErr = "Name is required";
+    } elseif (!preg_match("/^[a-zA-Z]+$/", $name)) {
+        $nameErr = "Only letters allowed";
+    }
+    if (!$email) {
+        $emailErr = "Email is required";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Invalid email format";
+    }
+
+    if (!$password) {
+        $passwordErr = "Password is required";
+    } elseif (!preg_match("/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_]).{7,}$/", $password)) {
+        $passwordErr = "Password must be 7+ chars with uppercase, number & special char";
+    }
+    // Display inputs if no errors
+    if (!$nameErr && !$emailErr && !$passwordErr) {
+        echo "<h3>Your Input:</h3>";
+        echo "Name: $name<br>Email: $email<br>Password: $password<br>";
+    }
+}
+?>
+<form method="post" action="">
+    Name: <input type="text" name="name">
+    <span class="error"><?= $nameErr ?></span><br><br>
+    Email: <input type="text" name="email">
+    <span class="error"><?= $emailErr ?></span><br><br>
+    Password: <input type="password" name="password">
+    <span class="error"><?= $passwordErr ?></span><br><br>
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
+
+
+
+
+5. ----------------------------------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>College Library Form</title>
+    <style>
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+<?php
+// Initialize variables
+$name = $roll = $email = $dept = "";
+$nameErr = $rollErr = $emailErr = $deptErr = "";
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Validate Name
+    if (empty($_POST["name"])) {
+        $nameErr = "Name is required";
+    } else {
+        $name = test_input($_POST["name"]);
+        if (!preg_match("/^[a-zA-Z ]*$/", $name)) {
+            $nameErr = "Only letters and spaces allowed";
+        }
+    }
+
+    // Validate Roll Number
+    if (empty($_POST["roll"])) {
+        $rollErr = "Roll number is required";
+    } else {
+        $roll = test_input($_POST["roll"]);
+        if (!preg_match("/^[0-9]+$/", $roll)) {
+            $rollErr = "Only numbers allowed";
+        }
+    }
+
+    // Validate Email
+    if (empty($_POST["email"])) {
+        $emailErr = "Email is required";
+    } else {
+        $email = test_input($_POST["email"]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = "Invalid email format";
+        }
+    }
+
+    // Validate Department
+    if (empty($_POST["dept"])) {
+        $deptErr = "Department is required";
+    } else {
+        $dept = test_input($_POST["dept"]);
+    }
+}
+
+// Function to clean input
+function test_input($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+?>
+
+<h2>College Library Student Form</h2>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+
+    Name: <input type="text" name="name" value="<?php echo $name; ?>">
+    <span class="error">* <?php echo $nameErr; ?></span><br><br>
+
+    Roll No: <input type="text" name="roll" value="<?php echo $roll; ?>">
+    <span class="error">* <?php echo $rollErr; ?></span><br><br>
+
+    Email: <input type="text" name="email" value="<?php echo $email; ?>">
+    <span class="error">* <?php echo $emailErr; ?></span><br><br>
+
+    Department:
+    <select name="dept">
+        <option value="">Select</option>
+        <option value="Computer Science" <?php if($dept=="Computer Science") echo "selected"; ?>>Computer Science</option>
+        <option value="Data Analytics" <?php if($dept=="Data Analytics") echo "selected"; ?>>Data Analytics</option>
+        <option value="Mathematics" <?php if($dept=="Mathematics") echo "selected"; ?>>Mathematics</option>
+    </select>
+    <span class="error">* <?php echo $deptErr; ?></span><br><br>
+
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<?php
+// If all fields are valid, display details
+if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($nameErr) && empty($rollErr) && empty($emailErr) && empty($deptErr)) {
+    echo "<h3>Student Details Entered:</h3>";
+    echo "Name: " . $name . "<br>";
+    echo "Roll No: " . $roll . "<br>";
+    echo "Email: " . $email . "<br>";
+    echo "Department: " . $dept . "<br>";
+}
+?>
+
+</body>
+</html>
+
+
